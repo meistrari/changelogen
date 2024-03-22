@@ -16,10 +16,10 @@ export async function generateMarkDown(
 
   // Generate Version Title
   const v = config.newVersion && `v${config.newVersion}`;
-  markdown.push("", "## " + (v || `${config.from || ""}...${config.to}`), "");
+  markdown.push("## What's Changed", " ");
 
   if (config.repo && config.from) {
-    markdown.push(formatCompareChanges(v, config));
+    markdown.push("**Full Changelog**: " + formatCompareChanges(v, config));
   }
 
   // Process authors information
