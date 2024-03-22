@@ -14,35 +14,17 @@ export async function generateMarkDown(
   const markdown: string[] = [];
   const breakingChanges = [];
 
-  // Version Title
+  // Generate Version Title
   const v = config.newVersion && `v${config.newVersion}`;
-  markdown.push("", "## " + (v || `${config.from || ""}...${config.to}`), "");
+  markdown.push("## What's Changed", " ");
 
   if (config.repo && config.from) {
-    markdown.push(formatCompareChanges(v, config));
+    markdown.push("**Full Changelog**: " + formatCompareChanges(v, config));
   }
 
-  for (const type in config.types) {
-    const group = typeGroups[type];
-    if (!group || group.length === 0) {
-      continue;
-    }
-
-    markdown.push("", "### " + config.types[type].title, "");
-    for (const commit of group.reverse()) {
-      const line = formatCommit(commit, config);
-      markdown.push(line);
-      if (commit.isBreaking) {
-        breakingChanges.push(line);
-      }
-    }
-  }
-
-  if (breakingChanges.length > 0) {
-    markdown.push("", "#### ⚠️ Breaking Changes", "", ...breakingChanges);
-  }
-
+  // Process authors information
   const _authors = new Map<string, { email: Set<string>; github?: string }>();
+
   for (const commit of commits) {
     if (!commit.author) {
       continue;
@@ -83,7 +65,31 @@ export async function generateMarkDown(
     })
   );
 
-  const authors = [..._authors.entries()].map((e) => ({ name: e[0], ...e[1] }));
+  authors = [..._authors.entries()].map((e) => ({ name: e[0], ...e[1] }));
+
+  // Generate general commits section
+  for (const type in config.types) {
+    const group = typeGroups[type];
+    if (!group || group.length === 0) {
+      continue;
+    }
+
+    markdown.push("", "### " + config.types[type].title, "");
+    for (const commit of group.reverse()) {
+      const line = await formatCommit(commit, config);
+      markdown.push(line);
+      if (commit.isBreaking) {
+        breakingChanges.push(line);
+      }
+    }
+  }
+
+  // Generate breaking changes section
+  if (breakingChanges.length > 0) {
+    markdown.push("", "#### ⚠️ Breaking Changes", "", ...breakingChanges);
+  }
+
+  // Generate contributors section
 
   if (authors.length > 0) {
     markdown.push(
@@ -133,15 +139,29 @@ export function parseChangelogMarkdown(contents: string) {
 }
 
 // --- Internal utils ---
+function findGithubUserByEmail(email: string): string | undefined {
+  for (const [userName, userEntry] of authors.entries()) {
+    if (userEntry.email.has(email)) {
+        return userEntry.github || userName;
+    }
+  }
+  return email;
+}
 
 function formatCommit(commit: GitCommit, config: ResolvedChangelogConfig) {
+  const author = findGithubUserByEmail(commit.author.email);
   return (
     "- " +
     (commit.scope ? `**${commit.scope.trim()}:** ` : "") +
     (commit.isBreaking ? "⚠️  " : "") +
     upperFirst(commit.description) +
+    " by " + formatGithubLink(author) +
     formatReferences(commit.references, config)
   );
+}
+
+function formatGithubLink(username: string) {
+  return username.includes(" ") ? username : `[@${username}](https://github.com/${username})`;
 }
 
 function formatReferences(
@@ -185,5 +205,6 @@ function groupBy(items: any[], key: string) {
   return groups;
 }
 
+let authors;
 const CHANGELOG_RELEASE_HEAD_RE = /^#{2,}\s+.*(v?(\d+\.\d+\.\d+)).*$/gm;
 const VERSION_RE = /^v?(\d+\.\d+\.\d+)$/;

@@ -61,9 +61,9 @@ export function formatCompareChanges(
 ) {
   const part =
     config.repo.provider === "bitbucket" ? "branches/compare" : "compare";
-  return `[compare changes](${baseUrl(config.repo)}/${part}/${config.from}...${
+  return `${baseUrl(config.repo)}/${part}/${config.from}...${
     v || config.to
-  })`;
+  }`.replace(/\n/g, "");
 }
 
 export async function resolveRepoConfig(cwd: string) {
