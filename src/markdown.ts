@@ -4,6 +4,7 @@ import { fetch } from "node-fetch-native";
 import type { ResolvedChangelogConfig } from "./config";
 import type { GitCommit, Reference } from "./git";
 import { formatReference, formatCompareChanges } from "./repo";
+import consola from "consola";
 
 export async function generateMarkDown(
   commits: GitCommit[],
@@ -16,6 +17,8 @@ export async function generateMarkDown(
 
   // Generate Version Title
   const v = config.newVersion && `v${config.newVersion}`;
+  const logger = consola.create({ stdout: process.stderr });
+  logger.info(markdown)
   markdown.push("## What's Changed", " ");
 
   if (config.repo && config.from) {
