@@ -142,7 +142,7 @@ export function parseChangelogMarkdown(contents: string) {
 function findGithubUserByEmail(email: string): string | undefined {
   for (const [userName, userEntry] of authors.entries()) {
     if (userEntry.email.has(email)) {
-        return userEntry.github || userName;
+        return userEntry.github || userEntry.name || userName;
     }
   }
   return email;
