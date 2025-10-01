@@ -1,6 +1,6 @@
 import { readPackageJSON } from "pkg-types";
-import type { Reference } from "./git";
-import type { ResolvedChangelogConfig } from "./config";
+import { Reference } from "./git";
+import { ResolvedChangelogConfig } from "./config";
 import { getGitRemoteURL } from "./git";
 
 export type RepoProvider = "github" | "gitlab" | "bitbucket";

@@ -1,4 +1,4 @@
-import type { ChangelogConfig } from "./config";
+import { ChangelogConfig } from "./config";
 import { execCommand } from "./exec";
 
 export interface GitCommitAuthor {
