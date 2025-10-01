@@ -6,7 +6,7 @@ import {
   writePackageJSON as _writePackageJSON,
 } from "pkg-types";
 import { isCI, provider } from "std-env";
-import type { ChangelogConfig } from "./config";
+import { ChangelogConfig } from "./config";
 
 import { execCommand } from "./exec";
 

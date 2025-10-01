@@ -2,8 +2,8 @@ import { resolve } from "node:path";
 import { loadConfig, setupDotenv } from "c12";
 import { getLastGitTag, getCurrentGitRef } from "./git";
 import { resolveRepoConfig, getRepoConfig } from "./repo";
-import type { SemverBumpType } from "./semver";
-import type { RepoConfig, RepoProvider } from "./repo";
+import { SemverBumpType } from "./semver";
+import { RepoConfig, RepoProvider } from "./repo";
 
 export interface ChangelogConfig {
   cwd: string;

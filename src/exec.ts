@@ -1,4 +1,4 @@
-import type { Options } from "execa";
+import { Options } from "execa";
 
 export async function execCommand(
   cmd: string,

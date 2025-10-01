@@ -1,5 +1,5 @@
 import { existsSync, promises as fsp } from "node:fs";
-import type { Argv } from "mri";
+import { Argv } from "mri";
 import { resolve } from "pathe";
 import consola from "consola";
 import { execa } from "execa";

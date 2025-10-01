@@ -1,7 +1,7 @@
 import semver from "semver";
 import consola from "consola";
-import type { ChangelogConfig } from "./config";
-import type { GitCommit } from "./git";
+import { ChangelogConfig } from "./config";
+import { GitCommit } from "./git";
 import { readPackageJSON, writePackageJSON } from "./package";
 
 export type SemverBumpType =
